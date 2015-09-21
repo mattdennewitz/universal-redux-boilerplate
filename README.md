@@ -3,7 +3,7 @@
 This example boilerplate is meant to demonstrate building a universal,
 SEO-ready redux application.
 
-This boilerplate was built off of [react-transform-boilerplate])https://github.com/gaearon/react-transform-boilerplate)
+This boilerplate was built off of [react-transform-boilerplate](https://github.com/gaearon/react-transform-boilerplate)
 but also owes design decision debts to [redux-blog-example](https://github.com/GetExpert/redux-blog-example)
 and others.
 
