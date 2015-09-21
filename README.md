@@ -45,8 +45,22 @@ without warning.
 2. `npm install` to install all components
 3. Read the comments in `server.js` to understand how the application server
     does its job
-4. `node index.js` to start the server, and then visit at
-    [http://localhost:3000](http://localhost:3000)
+4. Start the example API server. This is a single-endpoint Express server
+    that lives outside of our example application, and is meant to illustrate
+    fetching data from a REST api via `axios`.
+
+   Start this via `node api/index.js`.
+4. Run `npm run dev` to start the boilerplate server, and then visit at
+    [http://localhost:3000](http://localhost:3000).
+
+If everything is running correctly, should see the "Home" page.
+If you view the source, you'll see that the page was
+rendered completely on the server. You should also see that if you visit the
+"Posts" page, posts fetched from the example API server are loaded
+by `PostList.componentWillMount`. Reload the page and check the source -
+now they're rendered on the server thanks to `utils/fillStore`.
+Read through the `server.js` source for a detailed overview of
+what's happening here.
 
 And then begin to add your own components, routes, actions, and reducers!
 

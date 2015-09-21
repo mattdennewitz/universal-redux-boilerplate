@@ -18,9 +18,9 @@ export function fetchPosts() {
         dispatch(requestPosts);
 
         /* request posts from the api, dispatch `receivePosts` on success */
-        return axios.get('http://localhost:8000/api')
+        return axios.get('http://localhost:3100/api')
             .then(posts => dispatch(receivePosts(posts.data.posts)))
-            .catch(e => { console.trace(e) });
+            .catch(e => { console.log('API call failed') ; console.trace(e) });
     }
 }
 
