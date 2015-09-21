@@ -4,7 +4,6 @@ import Helmet from 'react-helmet';
 
 import { fetchPosts } from '../actions';
 
-// basic post list item
 export class Post extends Component {
     render() {
         const { post } = this.props;
@@ -12,6 +11,7 @@ export class Post extends Component {
         return (
             <div>
                 <h2>{post.title}</h2>
+
                 <article>
                     <p>{post.content}</p>
                 </article>
@@ -20,21 +20,29 @@ export class Post extends Component {
     }
 }
 
-// list of posts
 class PostList extends Component {
-    static fetchData(store) {
+    static fillStore(store) {
+        /* dispatch `fetchPosts`, an action that loads
+           content via an external api call. when the promise
+           returned by `fetchPosts` is resolved, the data
+           returned by the api call will be placed into the store
+           by `postsReducer`. */
         return store.dispatch(fetchPosts());
     }
 
     componentWillMount() {
-        console.log('mounting post list');
-
+        /* here, we fake logic for determining,
+           when the component is about to mount,
+           if we need to dispatch `fetchPosts` */
         if(this.props.postList.posts.length === 0) {
             this.props.dispatch(fetchPosts());
         }
     }
 
     render() {
+        /* `postList` is the list of posts in our store
+           as fetched by `fetchPosts` and connected
+           here as `postList` by `connect` (below) */
         let { postList, dispatch } = this.props;
 
         return (
@@ -51,6 +59,8 @@ class PostList extends Component {
     }
 }
 
+/* define a selector for `connect` which connects the `PostList` component
+   to the list of posts in our store. */
 function whatToConnect(state) {
     return {
         postList: state.posts,

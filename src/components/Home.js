@@ -6,6 +6,7 @@ export default class Home extends React.Component {
         return (
             <div>
                 <Helmet title="Home" />
+
                 <h1>Home</h1>
             </div>
         );

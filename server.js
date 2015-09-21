@@ -1,26 +1,23 @@
-var path = require('path');
-var express = require('express');
-var webpack = require('webpack');
+import path from 'path';
+import express from 'express';
+import webpack from 'webpack';
 
-var React = require('react');
-var Provider = require('react-redux').Provider;
-var ReduxRouter = require('redux-router').ReduxRouter;
-import createLocation from 'history/lib/createLocation';
+import React from 'react';
+import { Provider } from 'react-redux';
+import { ReduxRouter } from 'redux-router';
 import { match } from 'redux-router/server';
-var Helmet = require('react-helmet');
+import Helmet from 'react-helmet';
 
-var routes = require('./src/routes');
-var configureStore = require('./src/store');
-var fetchPosts = require('./src/actions').fetchPosts;
+import fillStore from './src/utils/fill-store';
+import routes from './src/routes';
+import configureStore from './src/store';
 
-/* - */
 
 var app = express();
 
-var env = process.env.NODE_ENV || 'dev';
-
-/* webpack middlware setup */
-if(env === 'dev') {
+/* enable webpack middleware for online bundling and hot reloading
+   if we're in dev mode */
+if(process.env.HOT) {
     var config = require('./webpack.config');
     var compiler = webpack(config);
 
@@ -35,33 +32,63 @@ if(env === 'dev') {
     app.use('/favicon.ico', express.static('dist'));
 }
 
-const fetchData = function(store, components) {
-    return Promise.all(
-        components.map(component => {
-            component = component && component.WrappedComponent || component;
-
-            if(!component || !component.fetchData) {
-                return;
-            }
-
-            // return the promise returned by the dispatch
-            // happening in `component.fetchData`
-            return component.fetchData(store);
-        })
-    );
-}
-
 app.get('*', function(req, res) {
-    /* figure out request location */
-    let location = createLocation(req.url);
-
-    /* create new store */
+    /* create a store meant to work on the server.
+       this store has our routes and the initial shape
+       of our `posts` state, and nothing else. */
     var store = configureStore('server');
 
+    /* responding to a request appears slightly complicated at first,
+       but is in reality a farily straight-forward operation.
+       here's a description of the workflow:
+
+        1. serving a request starts with dispatching through our redux store
+           a `match` action for the request's path with a callback to handle
+           the matched path. under the hood, `redux-router` uses
+           `react-router` to route the request to the appropriate `Route`
+           and calls the callback we provide with details about the component
+           hierarchy it found for the matching route.
+
+        2. once the route has been matched, we'll use `utils/fillStore`
+           to load any data required for rendering. this function collects
+           promises returned by any and all components via each component's
+           own `fillStore` function and awaits their resolution.
+           components will receive their data as props (if connected via
+           `react-redux/connect`), thus having it available at render-time.
+
+           any component that needs to fetch data before being rendered
+           should define a static function called `fillStore`. this funciton
+           will be passed the redux store, and should in turn dispatch
+           an action which returns a promise.
+
+           see `components/PostList` for an example.
+
+        3. once all promises have been resolved, we create a redux-wrapped
+           `<ReduxRouter />` instance with the render properties given
+           to us by `react-router`. These properties detail the location,
+           history, and more around what we're routing.
+
+        4. next, we extract `<head>`-ready data from `react-helmet`.
+           this will be used momentarily to populate `<title>` and seo and
+           social network data extraction tags.
+
+        5. then, we serialize the state of our application.
+           once the page loads on the client side, this state will be
+           given to the client-side redux store as its initial state.
+           this state is interpolate into the final html response.
+
+        6. the final html response is built out as a simple string
+           and sent back to the user. once the page has been rendered,
+           our webpack-bundled `bundle.js` script will boot redux
+           on the client-side, rehydrating it with our serialized state.
+
+           see `client.js` for this process.
+
+    */
     store.dispatch(
         match(req.url, (err, redirectLocation, renderProps) => {
             /* fill store with data from to-be-rendered components */
-            fetchData(store, renderProps.components)
+            fillStore(store, renderProps.components)
                 .then(() => {
                     /* render entire container to string */
                     const html = React.renderToString(
@@ -70,6 +97,7 @@ app.get('*', function(req, res) {
                         </Provider>
                     );
 
+                    /* extract helmet-specific data from component tree */
                     const head = Helmet.rewind();
 
                     /* serialize state */
@@ -97,7 +125,7 @@ app.get('*', function(req, res) {
                 })
                 .catch(e => {
                     console.trace(e);
-                    res.end(e);
+                    res.end('failed');
                 })
         })
     );

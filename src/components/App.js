@@ -11,8 +11,10 @@ class App extends React.Component {
                 <Helmet title="App" />
 
                 <nav>
-                    <Link to="/">Home</Link> / 
-                    <Link to="/posts">Posts</Link>
+                    <ul>
+                        <li><Link to="/">Home</Link></li>
+                        <li><Link to="/posts">Posts</Link></li>
+                    </ul>
                 </nav>
 
                 {this.props.children}

@@ -1,45 +1,57 @@
-React Transform Boilerplate
-=====================
+# Redux/Router/Webpack Boilerplate
 
-A *new* Webpack boilerplate with:
+This example boilerplate is meant to demonstrate building a
+universal, SEO-ready redux application.
 
-* hot reloading React components;
-* error handling inside component `render()` function;
-* error handling for syntax errors (thanks, **[@glenjamin](https://github.com/glenjamin)**!)
+This boilerplate was built off of (react-transform-boilerplate)[https://github.com/gaearon/react-transform-boilerplate]
+but also owes design decision debts to (redux-blog-example)[https://github.com/GetExpert/redux-blog-example]
+and others.
 
-Built with **[babel-plugin-react-transform](https://github.com/gaearon/babel-plugin-react-transform)** and a few custom transforms.  
-**[Does not](https://medium.com/@dan_abramov/the-death-of-react-hot-loader-765fa791d7c4)** use React Hot Loader.
+---
 
-[![react-transform channel on slack](https://img.shields.io/badge/slack-react--transform%40reactiflux-61DAFB.svg?style=flat-square)](http://www.reactiflux.com)
+## Under construction
 
-## Demo
+<img src="http://i.imgur.com/jQmU4Lb.jpg"
+    alt="under construction"
+    style="width: 360px" />
 
-![](http://i.imgur.com/AhGY28T.gif)
+**Warning**: this repo is being developed against `redux` libraries
+in alpha, beta, or release candidate states. APIs often change
+without warning.
 
-```
-git clone https://github.com/gaearon/react-transform-boilerplate.git
-cd react-transform-boilerplate
-npm install
-npm start
-open http://localhost:3000
-```
+---
 
-Then go ahead and edit files inside `src` (any file except `index.js`).
+## What's in the stack?
 
-## What’s Inside
+- [express](http://expressjs.com/) as the application server.
+    In `NODE_ENV=dev` mode (enabled by default), express is given
+    Webpack's middleware for compilation and hot reloading.
+    Additionally, redux reloading is enabled as a Babel plugin
+    (see `.babelrc`).
+- [react](http://facebook.github.io/react)
+- [webpack](https://webpack.github.io/)
+    - [babel-loader](https://github.com/babel/babel-loader)
+- [redux](https://rackt.github.io/redux)
+- [react-router](https://rackt.github.io/react-router)
+- [redux-router](https://rackt.github.io/redux-router)
+- [redux-thunk](https://github.com/gaearon/redux-thunk), which allows
+    actions to return promises rather than simple description objects
+- [react-helmet](https://github.com/nfl/react-helmet), for building
+    a proper `<head>` from within React components
 
+## How can I get started with this?
 
-The component instrumentation is implemented on top of **[babel-plugin-react-transform](https://github.com/gaearon/babel-plugin-react-transform)**:
+1. Clone this repo
+2. `npm install` to install all components
+3. Read the comments in `server.js` to understand how the application server
+    does its job
+4. `node index.js` to start the server, and then visit at
+    [http://localhost:3000](http://localhost:3000)
 
-* **[react-transform-webpack-hmr](https://github.com/gaearon/react-transform-webpack-hmr)** handles hot reloading
-* **[react-transform-catch-errors](https://github.com/gaearon/react-transform-catch-errors)** catches component errors
+And then begin to add your own components, routes, actions, and reducers!
 
-The syntax errors are displayed in an overlay by **[@glenjamin](https://github.com/glenjamin)**’s **[webpack-hot-middleware](https://github.com/glenjamin/webpack-hot-middleware)** which replaces Webpack Dev Server.
+## On the docket...
 
-## Discussion
-
-You can discuss React Transform and related projects in **#react-transform** channel on [Reactiflux Slack](http://reactiflux.com).
-
-## License
-
-CC0 (public domain)
+- Additional documentation and project maturation
+- Authentication layer with Passport
+- Yeoman generator

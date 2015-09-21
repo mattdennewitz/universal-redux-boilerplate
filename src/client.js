@@ -1,16 +1,15 @@
-var React = require('react');
+import React from 'react';
 window.React = React;
 
-var Provider = require('react-redux').Provider;
-var ReduxRouter = require('redux-router').ReduxRouter;
+import { Provider } from 'react-redux';
+import { ReduxRouter } from 'redux-router';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
 
-var routes = require('./routes');
+import routes from './routes';
 
 /* create store */
 var configureStore = require('./store');
 var store = configureStore('client', window.__initial_state__);
-window.store = store;
 
 var Root = (
     <Provider store={store}>
