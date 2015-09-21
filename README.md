@@ -24,10 +24,6 @@ without warning.
 ## What's in the stack?
 
 - [express](http://expressjs.com/) as the application server.
-    In `NODE_ENV=dev` mode (enabled by default), express is given
-    Webpack's middleware for compilation and hot reloading.
-    Additionally, redux reloading is enabled as a Babel plugin
-    (see `.babelrc`).
 - [react](http://facebook.github.io/react)
 - [webpack](https://webpack.github.io/)
     - [babel-loader](https://github.com/babel/babel-loader)
